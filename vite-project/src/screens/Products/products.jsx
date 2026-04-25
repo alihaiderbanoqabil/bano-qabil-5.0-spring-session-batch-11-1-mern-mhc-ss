@@ -1,11 +1,9 @@
 import React from 'react'
 
-const Header = () => {
+export const Products = () => {
   return (
     <div>
-      Header
+      Products
     </div>
   )
 }
-
-export default Header

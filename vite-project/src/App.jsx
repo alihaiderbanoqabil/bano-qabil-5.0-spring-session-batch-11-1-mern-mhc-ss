@@ -3,14 +3,41 @@ import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import Header from './components/Header'
-import Footer from './components/Footer'
+import { Footer } from './components/Footer'
 import './App.css'
+import { Blogs } from './screens/Blogs'
+import { Products } from './screens/Products/products'
+import { Greeting } from './components/Greeting'
+const hobbies = ["coding", "teaching"];
+// console.log(hobbies[0]);
+// console.log(hobbies[1]);
+const [hobby1, hobby2] = hobbies
+console.log(hobby1);
+console.log(hobby2);
 
 function App() {
   const [count, setCount] = useState(0)
+  // const state = useState(0)
+  // console.log(state, "state");
 
   return (
     <>
+      <Header />
+      <Greeting
+        // isStudent={true}
+        isStudent
+        obj={{ name: "ali", age: 28, hobbies: ["playing", "teaching", "coding"] }}
+        // obj2={{ name: "Ali", age: 20, hobbies: ["playing", "teaching", "coding"] }}
+        name={"ali"}
+        age={28} hobbies={["playing", "teaching", "coding"]} />
+      <Greeting obj={{
+        // name: "hasnain",
+        age: 26, hobbies: ["playing", "teaching", "coding"]
+      }}
+        //  name={"hasnain"}
+        age={26} hobbies={["playing", "teaching", "coding"]} />
+      {/* <Blogs />
+      <Products /> */}
       <section id="center">
         <div className="hero">
           <img src={heroImg} className="base" width="170" height="179" alt="" />
@@ -23,6 +50,12 @@ function App() {
             Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
           </p>
         </div>
+        {/* <button
+          className="counter"
+          onClick={() => state[1]((count) => count + 1)}
+        >
+          Count is {state[0]}
+        </button> */}
         <button
           className="counter"
           onClick={() => setCount((count) => count + 1)}
@@ -116,6 +149,7 @@ function App() {
 
       <div className="ticks"></div>
       <section id="spacer"></section>
+      <Footer />
     </>
   )
 }
