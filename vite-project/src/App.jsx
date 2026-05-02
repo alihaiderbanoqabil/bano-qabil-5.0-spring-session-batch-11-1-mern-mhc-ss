@@ -2,12 +2,16 @@ import React, { useState } from 'react'
 import { Counter } from './components/Counter'
 import { Form } from './components/Form'
 import { List } from './components/List'
+import { Parent } from './components/Parent'
+import { UseMemo } from './components/UseMemo'
 
 const App = () => {
   return (
     // <Counter/>
     // <Form/>
-    <List/>
+    // <List/>
+    // <Parent/>
+    <UseMemo/>
   )
 }
 
