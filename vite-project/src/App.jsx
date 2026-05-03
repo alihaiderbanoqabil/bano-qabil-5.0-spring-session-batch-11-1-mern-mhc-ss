@@ -4,14 +4,33 @@ import { Form } from './components/Form'
 import { List } from './components/List'
 import { Parent } from './components/Parent'
 import { UseMemo } from './components/UseMemo'
+import { UseCallback } from './components/UseCallback'
+import { Component1 } from './components/Component1'
+import { UserContext } from './context/inde'
 
 const App = () => {
+ const [user, setUser] = useState("Ali");
+  const [count, setCount] = useState(0)
+  const value = {
+    user: user,
+    count: count,
+    setUser: setUser,
+    setCount
+  }
   return (
-    // <Counter/>
-    // <Form/>
-    // <List/>
-    // <Parent/>
-    <UseMemo/>
+     <UserContext.Provider value={value}>
+
+
+    <>
+     {/* <Counter/>
+     <Form/>
+     <List/>
+     <Parent/>
+     <UseMemo/> */}
+    <UseCallback/>
+    <Component1/>
+    </>
+         </UserContext.Provider>
   )
 }
 
