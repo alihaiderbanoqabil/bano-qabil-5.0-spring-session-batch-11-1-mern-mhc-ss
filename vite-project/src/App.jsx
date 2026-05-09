@@ -7,32 +7,91 @@ import { UseMemo } from './components/UseMemo'
 import { UseCallback } from './components/UseCallback'
 import { Component1 } from './components/Component1'
 import { UserContext } from './context/inde'
+import { Todo } from './components/Todo'
+import { Children } from './components/Children'
+import {
+    createBrowserRouter,
+    RouterProvider,
+    useParams,
+} from "react-router-dom";
+import { Layout } from './layouts/Layout'
 
-const App = () => {
- const [user, setUser] = useState("Ali");
-  const [count, setCount] = useState(0)
-  const value = {
-    user: user,
-    count: count,
-    setUser: setUser,
-    setCount
-  }
-  return (
-     <UserContext.Provider value={value}>
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <Layout />,
+        errorElement: <NotFound />,
 
+        children: [
+            // Static Routes
+            {
+                index: true,
+                element: <Home />,
+            },
 
-    <>
-     {/* <Counter/>
-     <Form/>
-     <List/>
-     <Parent/>
-     <UseMemo/> */}
-    <UseCallback/>
-    <Component1/>
-    </>
-         </UserContext.Provider>
-  )
+            {
+                path: "about",
+                element: <About />,
+            },
+
+            {
+                path: "contact",
+                element: <Contact />,
+            },
+
+            // Dynamic Route
+            {
+                path: "user/:id",
+                element: <UserProfile />,
+            },
+        ],
+    },
+]);
+
+export default function App() {
+  return <RouterProvider router={router} />;
 }
+
+
+// // import './index.css'
+// import App from './App.jsx'
+// // import { App } from './App.jsx'
+// // import { App as Ali } from './App.jsx'
+
+
+// const App = () => {
+//  const [user, setUser] = useState("Ali");
+//   const [count, setCount] = useState(0)
+//   const value = {
+//     user: user,
+//     count: count,
+//     setUser: setUser,
+//     setCount
+//   }
+//   return (
+//      <UserContext.Provider value={value}>
+
+
+//     <>
+//      {/* <Counter/>
+//      <Form/>
+//      <List/>
+//      <Parent/>
+//      <UseMemo/> */}
+//     {/* <UseCallback/>
+//     <Component1/> */}
+//     {/* <Todo/> */}
+//     {/* <Children name={"ali"}/> */}
+//     <Children name={"ali"}>
+// <h1>Hello</h1>
+//     </Children>
+//     <Children name={"ali"}>
+// <form action=""><input type="text" name="" id="" /></form>
+//     </Children>
+//     </>
+//          </UserContext.Provider>
+//   )
+// }
 
 export default App
 
