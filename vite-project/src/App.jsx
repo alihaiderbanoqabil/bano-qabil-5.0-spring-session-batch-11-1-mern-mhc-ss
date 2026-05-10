@@ -12,9 +12,16 @@ import { Children } from './components/Children'
 import {
     createBrowserRouter,
     RouterProvider,
-    useParams,
 } from "react-router-dom";
 import { Layout } from './layouts/Layout'
+import { Home } from './screens/Home'
+import { About } from './screens/About'
+import { Contact } from './screens/Contact'
+import { NotFound } from './screens/NotFound'
+import "./App.css"
+import { Users } from './screens/Users'
+import { UserProfile } from './screens/UserProfile'
+import { UsersLayout } from './layouts/UsersLayout'
 
 const router = createBrowserRouter([
     {
@@ -35,15 +42,36 @@ const router = createBrowserRouter([
             },
 
             {
-                path: "contact",
+                path: "/contact",
                 element: <Contact />,
             },
 
-            // Dynamic Route
-            {
-                path: "user/:id",
-                element: <UserProfile />,
-            },
+            // {
+            //     path: "users",
+            //     element: <Users />,
+            // },
+            // // Dynamic Route
+            // {
+            //     path: "users/:id",
+            //     element: <UserProfile />,
+            // },
+             // Nested Users Routes
+      {
+        path: "users",
+        element: <UsersLayout />,
+
+        children: [
+          {
+            index: true,
+            element: <Users />,
+          },
+
+          {
+            path: ":id",
+            element: <UserProfile />,
+          },
+        ],
+      },
         ],
     },
 ]);
@@ -93,7 +121,7 @@ export default function App() {
 //   )
 // }
 
-export default App
+// export default App
 
 // import React, { Fragment, useState } from 'react'
 // import reactLogo from './assets/react.svg'
