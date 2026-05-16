@@ -22,6 +22,7 @@ import "./App.css"
 import { Users } from './screens/Users'
 import { UserProfile } from './screens/UserProfile'
 import { UsersLayout } from './layouts/UsersLayout'
+import { AntdPlayground } from './screens/AntdPlayground'
 
 const router = createBrowserRouter([
     {
@@ -44,6 +45,11 @@ const router = createBrowserRouter([
             {
                 path: "/contact",
                 element: <Contact />,
+            },
+
+            {
+                path: "/antd-playground",
+                element: <AntdPlayground />,
             },
 
             // {

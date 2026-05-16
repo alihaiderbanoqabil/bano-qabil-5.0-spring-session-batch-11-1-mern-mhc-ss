@@ -4,7 +4,6 @@ import Header from "../components/Header";
 export function Layout() {
   return (
     <div>
-      <h1>React Router DOM v7 Demo</h1>
 
 
       {/* <nav>
@@ -57,6 +56,13 @@ export function Layout() {
             isActive ? "active" : ""
           }
           >About</NavLink>
+
+        </li>
+        <li>
+          <NavLink to="/antd-playground" className={({ isActive }) =>
+            isActive ? "active" : ""
+          }
+          >Antd Playground</NavLink>
 
         </li>
         <li>
