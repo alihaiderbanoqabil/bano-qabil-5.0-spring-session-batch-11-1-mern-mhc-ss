@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { lazy, Suspense, useState } from 'react'
 import { Counter } from './components/Counter'
 import { Form } from './components/Form'
 import { List } from './components/List'
@@ -6,80 +6,148 @@ import { Parent } from './components/Parent'
 import { UseMemo } from './components/UseMemo'
 import { UseCallback } from './components/UseCallback'
 import { Component1 } from './components/Component1'
-import { UserContext } from './context/inde'
+import { UserContext } from './context'
 import { Todo } from './components/Todo'
 import { Children } from './components/Children'
 import {
     createBrowserRouter,
     RouterProvider,
 } from "react-router-dom";
-import { Layout } from './layouts/Layout'
-import { Home } from './screens/Home'
-import { About } from './screens/About'
-import { Contact } from './screens/Contact'
-import { NotFound } from './screens/NotFound'
-import "./App.css"
-import { Users } from './screens/Users'
-import { UserProfile } from './screens/UserProfile'
-import { UsersLayout } from './layouts/UsersLayout'
-import { AntdPlayground } from './screens/AntdPlayground'
+// import { Layout } from './layouts/Layout'
+// import { UsersLayout } from './layouts/UsersLayout'
+
+// import { Home } from './screens/Home'
+// import { About } from './screens/About'
+// import { Contact } from './screens/Contact'
+// import { NotFound } from './screens/NotFound'
+// import { Users } from './screens/Users'
+// import { UserProfile } from './screens/UserProfile'
+// import { AntdPlayground } from './screens/AntdPlayground'
+
+// with default export 
+// const Layout = lazy(() => import("./layouts/Layout"));
+// const UsersLayout = lazy(() => import("./layouts/UsersLayout"));
+
+// const Home = lazy(() => import("./screens/Home"));
+// const About = lazy(() => import("./screens/About"));
+// const Contact = lazy(() => import("./screens/Contact"));
+// const AntdPlayground = lazy(() => import("./screens/AntdPlayground"));
+// const Users = lazy(() => import('./screens/Users'));
+// const UserProfile = lazy(() => import('./screens/UserProfile'));
+// const NotFound = lazy(() => import("./screens/NotFound"));
+
+const Layout = lazy(() =>
+  import("./layouts/Layout").then((m) => ({ default: m.Layout }))
+);
+
+const UsersLayout = lazy(() =>
+  import("./layouts/UsersLayout").then((m) => ({ default: m.UsersLayout }))
+);
+
+const Home = lazy(() =>
+  import("./screens/Home").then((m) => ({ default: m.Home }))
+);
+
+const About = lazy(() =>
+  import("./screens/About").then((m) => ({ default: m.About }))
+);
+
+const Contact = lazy(() =>
+  import("./screens/Contact").then((m) => ({ default: m.Contact }))
+);
+
+const AntdPlayground = lazy(() =>
+  import("./screens/AntdPlayground").then((m) => ({ default: m.AntdPlayground }))
+);
+
+const Users = lazy(() =>
+  import("./screens/Users").then((m) => ({ default: m.Users }))
+);
+
+const UserProfile = lazy(() =>
+  import("./screens/UserProfile").then((m) => ({ default: m.UserProfile }))
+);
+
+const NotFound = lazy(() =>
+  import("./screens/NotFound").then((m) => ({ default: m.NotFound }))
+);
 
 const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <Layout />,
-        errorElement: <NotFound />,
+  {
+    path: "/",
+    element: (
+      <Suspense fallback={<div>Loading layout...</div>}>
+        <Layout />
+      </Suspense>
+    ),
+    errorElement: <NotFound />,
 
-        children: [
-            // Static Routes
-            {
-                index: true,
-                element: <Home />,
-            },
+    children: [
+      {
+        index: true,
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <Home />
+          </Suspense>
+        ),
+      },
 
-            {
-                path: "about",
-                element: <About />,
-            },
+      {
+        path: "about",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <About />
+          </Suspense>
+        ),
+      },
 
-            {
-                path: "/contact",
-                element: <Contact />,
-            },
+      {
+        path: "contact",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <Contact />
+          </Suspense>
+        ),
+      },
 
-            {
-                path: "/antd-playground",
-                element: <AntdPlayground />,
-            },
+      {
+        path: "antd-playground",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <AntdPlayground />
+          </Suspense>
+        ),
+      },
 
-            // {
-            //     path: "users",
-            //     element: <Users />,
-            // },
-            // // Dynamic Route
-            // {
-            //     path: "users/:id",
-            //     element: <UserProfile />,
-            // },
-             // Nested Users Routes
       {
         path: "users",
-        element: <UsersLayout />,
+        element: (
+          <Suspense fallback={<div>Loading users layout...</div>}>
+            <UsersLayout />
+          </Suspense>
+        ),
 
         children: [
           {
             index: true,
-            element: <Users />,
+            element: (
+              <Suspense fallback={<div>Loading users...</div>}>
+                <Users />
+              </Suspense>
+            ),
           },
-
           {
             path: ":id",
-            element: <UserProfile />,
+            element: (
+              <Suspense fallback={<div>Loading profile...</div>}>
+                <UserProfile />
+              </Suspense>
+            ),
           },
         ],
       },
-        ],
-    },
+    ],
+  },
 ]);
 
 export default function App() {

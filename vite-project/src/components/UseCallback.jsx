@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useContext, useState } from 'react'
-import { UserContext } from '../context/inde';
+import { UserContext } from '../context';
 
 export const UseCallback = () => {
     const [name, setName] = useState("")

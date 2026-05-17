@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { UserContext } from "../context/inde";
+import { UserContext } from "../context";
 
 export function Component1() {
   const state = useContext(UserContext)
