@@ -13,16 +13,16 @@ import {
     createBrowserRouter,
     RouterProvider,
 } from "react-router-dom";
-// import { Layout } from './layouts/Layout'
-// import { UsersLayout } from './layouts/UsersLayout'
+import { Layout } from './layouts/Layout'
+import { UsersLayout } from './layouts/UsersLayout'
 
-// import { Home } from './screens/Home'
-// import { About } from './screens/About'
-// import { Contact } from './screens/Contact'
-// import { NotFound } from './screens/NotFound'
-// import { Users } from './screens/Users'
-// import { UserProfile } from './screens/UserProfile'
-// import { AntdPlayground } from './screens/AntdPlayground'
+import { Home } from './screens/Home'
+import { About } from './screens/About'
+import { Contact } from './screens/Contact'
+import { NotFound } from './screens/NotFound'
+import { Users } from './screens/Users'
+import { UserProfile } from './screens/UserProfile'
+import { AntdPlayground } from './screens/AntdPlayground'
 
 // with default export 
 // const Layout = lazy(() => import("./layouts/Layout"));
@@ -36,113 +36,162 @@ import {
 // const UserProfile = lazy(() => import('./screens/UserProfile'));
 // const NotFound = lazy(() => import("./screens/NotFound"));
 
-const Layout = lazy(() =>
-  import("./layouts/Layout").then((m) => ({ default: m.Layout }))
-);
+// const Layout = lazy(() =>
+//   import("./layouts/Layout").then((m) => ({ default: m.Layout }))
+// );
 
-const UsersLayout = lazy(() =>
-  import("./layouts/UsersLayout").then((m) => ({ default: m.UsersLayout }))
-);
+// const UsersLayout = lazy(() =>
+//   import("./layouts/UsersLayout").then((m) => ({ default: m.UsersLayout }))
+// );
 
-const Home = lazy(() =>
-  import("./screens/Home").then((m) => ({ default: m.Home }))
-);
+// const Home = lazy(() =>
+//   import("./screens/Home").then((m) => ({ default: m.Home }))
+// );
 
-const About = lazy(() =>
-  import("./screens/About").then((m) => ({ default: m.About }))
-);
+// const About = lazy(() =>
+//   import("./screens/About").then((m) => ({ default: m.About }))
+// );
 
-const Contact = lazy(() =>
-  import("./screens/Contact").then((m) => ({ default: m.Contact }))
-);
+// const Contact = lazy(() =>
+//   import("./screens/Contact").then((m) => ({ default: m.Contact }))
+// );
 
-const AntdPlayground = lazy(() =>
-  import("./screens/AntdPlayground").then((m) => ({ default: m.AntdPlayground }))
-);
+// const AntdPlayground = lazy(() =>
+//   import("./screens/AntdPlayground").then((m) => ({ default: m.AntdPlayground }))
+// );
 
-const Users = lazy(() =>
-  import("./screens/Users").then((m) => ({ default: m.Users }))
-);
+// const Users = lazy(() =>
+//   import("./screens/Users").then((m) => ({ default: m.Users }))
+// );
 
-const UserProfile = lazy(() =>
-  import("./screens/UserProfile").then((m) => ({ default: m.UserProfile }))
-);
+// const UserProfile = lazy(() =>
+//   import("./screens/UserProfile").then((m) => ({ default: m.UserProfile }))
+// );
 
-const NotFound = lazy(() =>
-  import("./screens/NotFound").then((m) => ({ default: m.NotFound }))
-);
+// const NotFound = lazy(() =>
+//   import("./screens/NotFound").then((m) => ({ default: m.NotFound }))
+// );
 
+// const router = createBrowserRouter([
+//   {
+//     path: "/",
+//     element: (
+//       <Suspense fallback={<div>Loading layout...</div>}>
+//         <Layout />
+//       </Suspense>
+//     ),
+//     errorElement: <NotFound />,
+
+//     children: [
+//       {
+//         index: true,
+//         element: (
+//           <Suspense fallback={<div>Loading...</div>}>
+//             <Home />
+//           </Suspense>
+//         ),
+//       },
+
+//       {
+//         path: "about",
+//         element: (
+//           <Suspense fallback={<div>Loading...</div>}>
+//             <About />
+//           </Suspense>
+//         ),
+//       },
+
+//       {
+//         path: "contact",
+//         element: (
+//           <Suspense fallback={<div>Loading...</div>}>
+//             <Contact />
+//           </Suspense>
+//         ),
+//       },
+
+//       {
+//         path: "antd-playground",
+//         element: (
+//           <Suspense fallback={<div>Loading...</div>}>
+//             <AntdPlayground />
+//           </Suspense>
+//         ),
+//       },
+
+//       {
+//         path: "users",
+//         element: (
+//           <Suspense fallback={<div>Loading users layout...</div>}>
+//             <UsersLayout />
+//           </Suspense>
+//         ),
+
+//         children: [
+//           {
+//             index: true,
+//             element: (
+//               <Suspense fallback={<div>Loading users...</div>}>
+//                 <Users />
+//               </Suspense>
+//             ),
+//           },
+//           {
+//             path: ":id",
+//             element: (
+//               <Suspense fallback={<div>Loading profile...</div>}>
+//                 <UserProfile />
+//               </Suspense>
+//             ),
+//           },
+//         ],
+//       },
+//     ],
+//   },
+// ]);
+
+// export default function App() {
+//   return <RouterProvider router={router} />;
+// }
 const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <Suspense fallback={<div>Loading layout...</div>}>
-        <Layout />
-      </Suspense>
-    ),
+    element: <Layout />,
     errorElement: <NotFound />,
 
     children: [
       {
         index: true,
-        element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <Home />
-          </Suspense>
-        ),
+        element: <Home />,
       },
 
       {
         path: "about",
-        element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <About />
-          </Suspense>
-        ),
+        element: <About />,
       },
 
       {
         path: "contact",
-        element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <Contact />
-          </Suspense>
-        ),
+        element: <Contact />,
       },
 
       {
         path: "antd-playground",
-        element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <AntdPlayground />
-          </Suspense>
-        ),
+        element: <AntdPlayground />,
       },
 
       {
         path: "users",
-        element: (
-          <Suspense fallback={<div>Loading users layout...</div>}>
-            <UsersLayout />
-          </Suspense>
-        ),
+        element: <UsersLayout />,
 
         children: [
           {
             index: true,
-            element: (
-              <Suspense fallback={<div>Loading users...</div>}>
-                <Users />
-              </Suspense>
-            ),
+            element: <Users />,
           },
           {
             path: ":id",
-            element: (
-              <Suspense fallback={<div>Loading profile...</div>}>
-                <UserProfile />
-              </Suspense>
-            ),
+            element: <UserProfile />,
           },
         ],
       },
@@ -153,7 +202,6 @@ const router = createBrowserRouter([
 export default function App() {
   return <RouterProvider router={router} />;
 }
-
 
 // // import './index.css'
 // import App from './App.jsx'
