@@ -4,6 +4,7 @@ import App from './App';
 import "./index.css"
 import { Provider } from 'react-redux'
 import { store } from './store';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 // const root = document.getElementById('root');
 // createRoot(root).render(
