@@ -23,6 +23,7 @@ import { NotFound } from './screens/NotFound'
 import { Users } from './screens/Users'
 import { UserProfile } from './screens/UserProfile'
 import { AntdPlayground } from './screens/AntdPlayground'
+import { Products } from './screens/Products/products'
 
 // with default export 
 // const Layout = lazy(() => import("./layouts/Layout"));
@@ -168,6 +169,11 @@ const router = createBrowserRouter([
       {
         path: "about",
         element: <About />,
+      },
+
+      {
+        path: "products",
+        element: <Products />,
       },
 
       {

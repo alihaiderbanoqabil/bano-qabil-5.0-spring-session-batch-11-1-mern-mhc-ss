@@ -34,7 +34,6 @@ export const fetchUsers = createAsyncThunk('user/fetchUsers', (query) => {
         //   total: 0
         // }
         data
-        ;
     })
     .catch((error) => {
       console.log(error, "error");
