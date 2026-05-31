@@ -1,31 +1,29 @@
-import React, { lazy, Suspense, useState } from 'react'
-import { Counter } from './components/Counter'
-import { Form } from './components/Form'
-import { List } from './components/List'
-import { Parent } from './components/Parent'
-import { UseMemo } from './components/UseMemo'
-import { UseCallback } from './components/UseCallback'
-import { Component1 } from './components/Component1'
-import { UserContext } from './context'
-import { Todo } from './components/Todo'
-import { Children } from './components/Children'
-import {
-    createBrowserRouter,
-    RouterProvider,
-} from "react-router-dom";
-import { Layout } from './layouts/Layout'
-import { UsersLayout } from './layouts/UsersLayout'
+import React, { lazy, Suspense, useState } from "react";
+import { Counter } from "./components/Counter";
+import { Form } from "./components/Form";
+import { List } from "./components/List";
+import { Parent } from "./components/Parent";
+import { UseMemo } from "./components/UseMemo";
+import { UseCallback } from "./components/UseCallback";
+import { Component1 } from "./components/Component1";
+import { UserContext } from "./context";
+import { Todo } from "./components/Todo";
+import { Children } from "./components/Children";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Layout } from "./layouts/Layout";
+import { UsersLayout } from "./layouts/UsersLayout";
 
-import { Home } from './screens/Home'
-import { About } from './screens/About'
-import { Contact } from './screens/Contact'
-import { NotFound } from './screens/NotFound'
-import { Users } from './screens/Users'
-import { UserProfile } from './screens/UserProfile'
-import { AntdPlayground } from './screens/AntdPlayground'
-import { Products } from './screens/Products/products'
+import { Home } from "./screens/Home";
+import { About } from "./screens/About";
+import { Contact } from "./screens/Contact";
+import { NotFound } from "./screens/NotFound";
+import { Users } from "./screens/Users";
+import { UserProfile } from "./screens/UserProfile";
+import { AntdPlayground } from "./screens/AntdPlayground";
+import { Products } from "./screens/Products/products";
+import { ErrorBoundaryFunctionalComponent } from "./components/ErrorBoundaryFunctionalComponent";
 
-// with default export 
+// with default export
 // const Layout = lazy(() => import("./layouts/Layout"));
 // const UsersLayout = lazy(() => import("./layouts/UsersLayout"));
 
@@ -158,7 +156,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
-    errorElement: <NotFound />,
+    errorElement: <ErrorBoundaryFunctionalComponent />,
 
     children: [
       {
@@ -185,10 +183,14 @@ const router = createBrowserRouter([
         path: "antd-playground",
         element: <AntdPlayground />,
       },
-
+      {
+        path: "*",
+        element: <NotFound />,
+      },
       {
         path: "users",
         element: <UsersLayout />,
+        errorElement: <ErrorBoundaryFunctionalComponent />,
 
         children: [
           {
@@ -198,6 +200,10 @@ const router = createBrowserRouter([
           {
             path: ":id",
             element: <UserProfile />,
+          },
+          {
+            path: "*",
+            element: <NotFound />,
           },
         ],
       },
@@ -214,7 +220,6 @@ export default function App() {
 // // import { App } from './App.jsx'
 // // import { App as Ali } from './App.jsx'
 
-
 // const App = () => {
 //  const [user, setUser] = useState("Ali");
 //   const [count, setCount] = useState(0)
@@ -226,7 +231,6 @@ export default function App() {
 //   }
 //   return (
 //      <UserContext.Provider value={value}>
-
 
 //     <>
 //      {/* <Counter/>
@@ -332,7 +336,7 @@ export default function App() {
 //         >
 //           Count is {count}
 //         </button>
-       
+
 //       </section>
 
 //       <div className="ticks"></div>
@@ -655,19 +659,15 @@ export default function App() {
 // //   )
 // // }
 
-
-
 // // const Navbar = ()=>{
 
 // // }
 
 // // export default Navbar
 
-
 // // export const app = () => {
 // //   return "Hello world", 20
 // // }
-
 
 // // export const App = () => {
 // //   return (

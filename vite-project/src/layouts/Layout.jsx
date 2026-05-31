@@ -1,11 +1,10 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
 import Header from "../components/Header";
+import { Footer } from "../components/Footer";
 
 export function Layout() {
   return (
     <div>
-
-
       {/* <nav>
         <li>
           <NavLink to="/" style={(style) => {
@@ -44,42 +43,48 @@ export function Layout() {
       {/* <Header /> */}
       <nav>
         <li>
-          <NavLink to="/" className={({ isActive }) =>
-            isActive ? "active" : ""
-          }
-          >Home</NavLink>
-
+          <NavLink
+            to="/"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            Home
+          </NavLink>
         </li>
 
         <li>
-          <NavLink to="/about" className={({ isActive }) =>
-            isActive ? "active" : ""
-          }
-          >About</NavLink>
-
+          <NavLink
+            to="/about"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            About
+          </NavLink>
         </li>
         <li>
-          <NavLink to="/antd-playground" className={({ isActive }) =>
-            isActive ? "active" : ""
-          }
-          >Antd Playground</NavLink>
-
+          <NavLink
+            to="/antd-playground"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            Antd Playground
+          </NavLink>
         </li>
         <li>
-          <NavLink to="/contact" className={({ isActive }) =>
-            isActive ? "active" : ""
-          }
-          >Contact</NavLink>
-
+          <NavLink
+            to="/contact"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            Contact
+          </NavLink>
         </li>
         <li>
-          <NavLink to="/users" state={"ali"} replace={true} className={({ isActive }) =>
-            isActive ? "active" : ""
-          }
-          >Users</NavLink>
-
+          <NavLink
+            to="/users"
+            state={"ali"}
+            replace={true}
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            Users
+          </NavLink>
         </li>
-
       </nav>
       {/* <nav>
         <li>
@@ -99,6 +104,7 @@ export function Layout() {
       </nav> */}
       {/* Child routes render here */}
       <Outlet />
+      <Footer />
     </div>
   );
 }
