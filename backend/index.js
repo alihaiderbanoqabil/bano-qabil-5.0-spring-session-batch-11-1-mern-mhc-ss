@@ -68,129 +68,129 @@
 // // Getting the directory name using path.dirname()
 // console.log('Directory using path.dirname():', dirname(__filename));
 
-// const PORT = 3000;
+const PORT = 3000;
 
-// const users = [
-//     {
-//         id: 1,
-//         name: "Ali",
-//         email: "ali@example.com",
-//     },
-//     {
-//         id: 2,
-//         name: "Ahmed",
-//         email: "ahmed@example.com",
-//     },
-// ];
+const users = [
+    {
+        id: 1,
+        name: "Ali",
+        email: "ali@example.com",
+    },
+    {
+        id: 2,
+        name: "Ahmed",
+        email: "ahmed@example.com",
+    },
+];
 
-// const server = http.createServer((req, res) => {
-//     // Response Headers
-//     res.setHeader("Content-Type", "application/json");
+const server = http.createServer((req, res) => {
+    // Response Headers
+    res.setHeader("Content-Type", "application/json");
 
-//     // GET /
-//     if (req.method === "GET" && req.url === "/") {
-//         return res.end(
-//             JSON.stringify({
-//                 message: "Welcome to Node.js Server",
-//             })
-//         );
-//     }
+    // GET /
+    if (req.method === "GET" && req.url === "/") {
+        return res.end(
+            JSON.stringify({
+                message: "Welcome to Node.js Server",
+            })
+        );
+    }
 
-//     // GET /api/users
-//     if (req.method === "GET" && req.url === "/api/users") {
-//         return res.end(JSON.stringify(users));
-//     }
+    // GET /api/users
+    if (req.method === "GET" && req.url === "/api/users") {
+        return res.end(JSON.stringify(users));
+    }
 
-//     // GET /api/users/1
-//     if (req.method === "GET" && req.url.startsWith("/api/users/")) {
-//         const id = Number(req.url.split("/")[3]);
+    // GET /api/users/1
+    if (req.method === "GET" && req.url.startsWith("/api/users/")) {
+        const id = Number(req.url.split("/")[3]);
 
-//         const user = users.find((u) => u.id === id);
+        const user = users.find((u) => u.id === id);
 
-//         if (!user) {
-//             res.statusCode = 404;
+        if (!user) {
+            res.statusCode = 404;
 
-//             return res.end(
-//                 JSON.stringify({
-//                     message: "User not found",
-//                 })
-//             );
-//         }
+            return res.end(
+                JSON.stringify({
+                    message: "User not found",
+                })
+            );
+        }
 
-//         return res.end(JSON.stringify(user));
-//     }
+        return res.end(JSON.stringify(user));
+    }
 
-//     // POST /api/users
-//     if (req.method === "POST" && req.url === "/api/users") {
-//         let body = "";
+    // POST /api/users
+    if (req.method === "POST" && req.url === "/api/users") {
+        let body = "";
 
-//         req.on("data", (chunk) => {
-//             body += chunk;
-//         });
+        req.on("data", (chunk) => {
+            body += chunk;
+        });
 
-//         req.on("end", () => {
-//             const data = JSON.parse(body);
+        req.on("end", () => {
+            const data = JSON.parse(body);
 
-//             const newUser = {
-//                 id: users.length + 1,
-//                 name: data.name,
-//                 email: data.email,
-//             };
+            const newUser = {
+                id: users.length + 1,
+                name: data.name,
+                email: data.email,
+            };
 
-//             users.push(newUser);
+            users.push(newUser);
 
-//             res.statusCode = 201;
+            res.statusCode = 201;
 
-//             res.end(
-//                 JSON.stringify({
-//                     message: "User created successfully",
-//                     user: newUser,
-//                 })
-//             );
-//         });
+            res.end(
+                JSON.stringify({
+                    message: "User created successfully",
+                    user: newUser,
+                })
+            );
+        });
 
-//         return;
-//     }
+        return;
+    }
 
-//     // DELETE /api/users/1
-//     if (req.method === "DELETE" && req.url.startsWith("/api/users/")) {
-//         const id = Number(req.url.split("/")[3]);
+    // DELETE /api/users/1
+    if (req.method === "DELETE" && req.url.startsWith("/api/users/")) {
+        const id = Number(req.url.split("/")[3]);
 
-//         const index = users.findIndex((u) => u.id === id);
+        const index = users.findIndex((u) => u.id === id);
 
-//         if (index === -1) {
-//             res.statusCode = 404;
+        if (index === -1) {
+            res.statusCode = 404;
 
-//             return res.end(
-//                 JSON.stringify({
-//                     message: "User not found",
-//                 })
-//             );
-//         }
+            return res.end(
+                JSON.stringify({
+                    message: "User not found",
+                })
+            );
+        }
 
-//         const deletedUser = users.splice(index, 1);
+        const deletedUser = users.splice(index, 1);
 
-//         return res.end(
-//             JSON.stringify({
-//                 message: "User deleted successfully",
-//                 user: deletedUser[0],
-//             })
-//         );
-//     }
+        return res.end(
+            JSON.stringify({
+                message: "User deleted successfully",
+                user: deletedUser[0],
+            })
+        );
+    }
 
-//     // Route Not Found
-//     res.statusCode = 404;
+    // Route Not Found
+    res.statusCode = 404;
 
-//     res.end(
-//         JSON.stringify({
-//             message: "Route not found",
-//         })
-//     );
-// });
+    res.end(
+        JSON.stringify({
+            message: "Route not found",
+        })
+    );
+});
 
-// server.listen(PORT, 'localhost', () => {
-//     console.log(`Server is running on http://localhost:${PORT}`);
-// });
+server.listen(PORT, 'localhost', () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
 
 
 let http = require('http');
