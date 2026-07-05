@@ -1,10 +1,16 @@
+require('dotenv').config()
+
 // const app = require("./app");
 const express = require("express");
+
+// const connectDB = require("./config/db");
 
 const userRoutes = require("./routes/user.routes");
 // const productsRoutes = require("./routes/products.routes");
 // const categoriesRoutes = require("./routes/categories.routes");
 // const ordersRoutes = require("./routes/orders.routes");
+
+// connectDB();
 
 const app = express(); // Create an instance of the Express application
 

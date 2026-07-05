@@ -26,6 +26,24 @@ const createUser = (body) => {
     return newUser;
 };
 
+const updateUser = (body) => {
+    // const { name, email } = body;
+    // const newUser = {
+    //     id: users.length + 1,
+    //     name,
+    //     email,
+    // };
+    const newUser = {
+        id: users.length + 1,
+        name: body.name,
+        email: body.email,
+    };
+
+    users.push(newUser);
+
+    return newUser;
+};
+
 const deleteUser = (id) => {
     const index = users.findIndex(
         (user) => user.id === Number(id)

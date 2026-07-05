@@ -27,6 +27,15 @@ const createUser = (req, res) => {
     });
 };
 
+const updateUser = (req, res) => {
+    const user = userService.updateUser(req.body);
+
+    res.status(200).json({
+        message: "User updated successfully",
+        user,
+    });
+};
+
 const deleteUser = (req, res) => {
     const user = userService.deleteUser(req.params.id);
 
@@ -46,5 +55,6 @@ module.exports = {
     getUsers: getUsers,
     getUserById,
     createUser,
+    updateUser,
     deleteUser,
 };
