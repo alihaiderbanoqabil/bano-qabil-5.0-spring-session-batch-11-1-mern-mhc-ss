@@ -1,6 +1,10 @@
 require("dotenv").config();
 
 const express = require("express");
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const { xss } = require('express-xss-sanitizer');
 const path = require("path");
 
 const connectDB = require("./config/db");
@@ -14,9 +18,38 @@ connectDB();
 
 const app = express();
 
-app.use(express.json()); // Middleware to parse JSON request bodies
-app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded request bodies
-app.use("/uploads", express.static(path.join(__dirname, "../uploads"))); // Serve static files from the uploads directory
+// Adds headers: Access-Control-Allow-Origin: *
+// app.use(cors())
+
+// Helmet — sets various security-related HTTP headers
+app.use(helmet());
+
+// middleware which sanitizes user input data (in req.body, req.query, req.headers and req.params) to prevent Cross Site Scripting (XSS) attack.
+app.use(xss());
+
+// CORS — configure allowed origins as needed
+app.use(cors({
+    origin: ['http://localhost:3000'], // replace with your allowed origin(s), or '*' for all
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    credentials: true, // only if you need cookies/auth headers cross-origin
+}));
+
+// Rate limiting — protects against brute force / abuse
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100,                 // limit each IP to 100 requests per window
+    standardHeaders: true,    // return rate limit info in RateLimit-* headers
+    legacyHeaders: false,     // disable X-RateLimit-* headers
+    message: 'Too many requests from this IP, please try again later.',
+});
+app.use(limiter);
+
+// Middleware to parse JSON request bodies
+app.use(express.json()); 
+// Middleware to parse URL-encoded request bodies
+app.use(express.urlencoded({ extended: true })); 
+// Serve static files from the uploads directory
+app.use("/uploads", express.static(path.join(__dirname, "../uploads"))); 
 
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);

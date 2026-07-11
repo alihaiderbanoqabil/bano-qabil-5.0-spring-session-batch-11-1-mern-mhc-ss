@@ -27,6 +27,8 @@ const upload = multer({
 });
 
 const authenticate = (req, res, next) => {
+    console.log(req.headers, "req.headers");
+    
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -37,6 +39,8 @@ const authenticate = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || "supersecretkey");
+        console.log(decoded, "decoded");
+        
         req.user = decoded;
         next();
     } catch (error) {
