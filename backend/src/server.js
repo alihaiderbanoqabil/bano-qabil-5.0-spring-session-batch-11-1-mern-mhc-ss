@@ -9,6 +9,7 @@ const path = require("path");
 
 const connectDB = require("./config/db");
 
+const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
 const productRoutes = require("./routes/product.routes");
 const categoryRoutes = require("./routes/category.routes");
@@ -51,6 +52,7 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static files from the uploads directory
 app.use("/uploads", express.static(path.join(__dirname, "../uploads"))); 
 
+app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);

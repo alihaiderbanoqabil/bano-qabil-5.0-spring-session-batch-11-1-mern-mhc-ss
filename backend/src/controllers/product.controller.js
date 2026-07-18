@@ -3,7 +3,7 @@ const Product = require("../models/product.model");
 const getProducts = async (req, res) => {
     try {
         const products = await Product.find().populate("category", "name slug");
-        return res.json(products);
+        return res.json({ message: "Products fetched successfully.", data: products });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -25,6 +25,9 @@ const getProductById = async (req, res) => {
 const createProduct = async (req, res) => {
     try {
         const payload = { ...req.body };
+        console.log(req.files, "req.files");
+        console.log(req.file, "req.file");
+        
         if (req.files && req.files.length) {
             payload.images = req.files.map((file) => `/uploads/${file.filename}`);
         }

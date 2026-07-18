@@ -2,33 +2,43 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
+const mongoose = require("mongoose")
 
 const uploadDir = path.join(__dirname, "../../uploads");
 fs.mkdirSync(uploadDir, { recursive: true });
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadDir),
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
-        cb(null, uniqueName);
-    },
-});
 
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith("image/")) return cb(null, true);
     cb(new Error("Only image files are allowed"));
 };
 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        // console.log({ req, file, cb });
+        cb(null, uploadDir)
+    },
+    // filename: (req, file, cb) => {
+    //     const ext = path.extname(file.originalname);
+    //     const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+    //     cb(null, uniqueName);
+    // },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        // const name = path.basename(file.originalname, ext).replace(/\s+/g, "-");
+        // const uniqueName = `${name}-${new mongoose.Types.ObjectId()}${ext}`;
+        const uniqueName = `${new mongoose.Types.ObjectId()}${ext}`;
+        cb(null, uniqueName);
+    }
+});
+
+
 const upload = multer({
-    storage,
+    storage: storage,
     fileFilter,
     limits: { fileSize: 5 * 1024 * 1024 },
 });
 
 const authenticate = (req, res, next) => {
-    console.log(req.headers, "req.headers");
-    
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -39,8 +49,6 @@ const authenticate = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || "supersecretkey");
-        console.log(decoded, "decoded");
-        
         req.user = decoded;
         next();
     } catch (error) {
