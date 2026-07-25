@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
+const { createVerificationToken, sendVerificationEmail } = require("../utils/email");
 
 const createToken = (user) => {
     return jwt.sign(
@@ -19,32 +20,48 @@ const register = async (req, res) => {
             return res.status(400).json({ message: "Name, email and password are required" });
         }
 
-        // const existingUser = await User.findOne({ email });
-        // if (existingUser) {
-        //     return res.status(400).json({ message: "User already exists" });
-        // }
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "User already exists" });
+        }
+        const isCustomer = role === "customer";
 
         const user = await User.create({
             name,
             email,
             password,
-            role: role === "admin" ? "admin" : "customer",
+            role,
             phone,
             address,
+            // ...(role === "admin" ? { isEmailVerified: true } : {}),
+            // ...(!isCustomer ? { isEmailVerified: true } : {}),
+            ...(isCustomer ? {} : { isEmailVerified: true })
         });
 
-        // const user = await User.create(req.body);
 
-        // const token = createToken(user);
+        if (req.body.role === "customer") {
+            const verificationToken = createVerificationToken(user);
+            user.emailVerificationToken = verificationToken;
+            await user.save();
+
+            const baseUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+            const verificationLink = `${baseUrl}/verify-email?token=${verificationToken}`;
+
+            await sendVerificationEmail({
+                to: user.email,
+                name: user.name,
+                verificationLink,
+            });
+        }
 
         return res.status(201).json({
-            message: "User registered successfully",
-            // token,
+            message: `User registered successfully.${isCustomer ? " Please verify your email to activate your account." : ""}`,
             user: {
                 id: user._id,
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                ...(isCustomer ? { isEmailVerified: user.isEmailVerified } : {})
             },
         });
     } catch (error) {
@@ -66,8 +83,11 @@ const login = async (req, res) => {
 
         const user = await User.findOne({ email }).select("+password");
         if (!user || !(await user.comparePassword(password))) {
-            // if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ message: "Invalid email or password" });
+        }
+
+        if (!user.isEmailVerified) {
+            return res.status(403).json({ message: "Please verify your email before logging in" });
         }
 
         const token = createToken(user);
@@ -80,6 +100,7 @@ const login = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                isEmailVerified: user.isEmailVerified,
             },
         });
     } catch (error) {
@@ -100,9 +121,37 @@ const getMe = async (req, res) => {
     }
 };
 
+const verifyEmail = async (req, res) => {
+    try {
+        const { token } = req.query;
+
+        if (!token) {
+            return res.status(400).json({ message: "Verification token is required" });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findOne({ email: decoded.email, emailVerificationToken: token });
+
+        if (!user) {
+            return res.status(400).json({ message: "Invalid or expired verification token" });
+        }
+
+        user.isEmailVerified = true;
+        user.emailVerificationToken = null;
+        await user.save();
+
+        return res.json({ message: "Email verified successfully" });
+    } catch (error) {
+        if (error.name === "TokenExpiredError") {
+            return res.status(400).json({ message: "Verification token has expired" });
+        }
+        return res.status(500).json({ message: error.message });
+    }
+};
 
 module.exports = {
     register,
     login,
     getMe,
+    verifyEmail,
 };
