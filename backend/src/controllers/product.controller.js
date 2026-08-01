@@ -1,6 +1,11 @@
 const Product = require("../models/product.model");
 
 const getProducts = async (req, res) => {
+    console.log(req.query, "req.query");
+    // console.log(req.params, "req.params");
+    // console.log(req.body, "req.body");
+    // console.log(req.headers, "req.headers");
+    
     try {
         const products = await Product.find().populate("category", "name slug");
         return res.json({ message: "Products fetched successfully.", data: products });

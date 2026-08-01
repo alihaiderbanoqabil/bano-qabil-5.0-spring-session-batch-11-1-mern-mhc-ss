@@ -49,6 +49,8 @@ const authenticate = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || "supersecretkey");
+        // console.log(decoded, "decoded");
+        
         req.user = decoded;
         next();
     } catch (error) {
@@ -77,3 +79,20 @@ module.exports = {
     uploadSingle,
     uploadMultiple,
 };
+
+
+// function add(num1, num2) {
+//     return num1 + num2
+// }
+
+// function add(...numbers) {
+//     let sum = 0
+//     console.log(numbers, "numbers");
+//     for (const number of numbers) {
+//         sum = sum + number;
+//     }
+//     return sum
+
+// }
+// console.log(add(10, 20, 30, 40, 50));
+// console.log(add(10, 20, 30, 40, 50, 40));

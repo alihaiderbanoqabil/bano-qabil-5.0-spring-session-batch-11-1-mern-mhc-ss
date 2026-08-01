@@ -46,6 +46,7 @@ const userSchema = new mongoose.Schema(
         emailVerificationToken: {
             type: String,
             default: null,
+            select: false, // don't return password by default
         },
 
     },

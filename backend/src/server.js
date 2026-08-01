@@ -1,10 +1,15 @@
 require("dotenv").config();
 
 const express = require("express");
-const cors = require('cors');
+// https://www.npmjs.com/package/cors
+const cors = require('cors'); 
+// https://www.npmjs.com/package/helmet
 const helmet = require('helmet');
+// https://www.npmjs.com/package/express-rate-limit
 const rateLimit = require('express-rate-limit');
+// https://www.npmjs.com/package/express-xss-sanitizer
 const { xss } = require('express-xss-sanitizer');
+
 const path = require("path");
 
 const connectDB = require("./config/db");
@@ -18,6 +23,8 @@ const orderRoutes = require("./routes/order.routes");
 connectDB();
 
 const app = express();
+
+app.set('query parser', 'extended'); // restores qs-style nested query parsing
 
 // Adds headers: Access-Control-Allow-Origin: *
 // app.use(cors())
