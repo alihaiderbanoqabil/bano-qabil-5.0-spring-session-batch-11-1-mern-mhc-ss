@@ -1,14 +1,25 @@
 const Product = require("../models/product.model");
+const { queryService } = require("../utils/queryService");
 
 const getProducts = async (req, res) => {
     console.log(req.query, "req.query");
     // console.log(req.params, "req.params");
     // console.log(req.body, "req.body");
     // console.log(req.headers, "req.headers");
-    
+
     try {
-        const products = await Product.find().populate("category", "name slug");
-        return res.json({ message: "Products fetched successfully.", data: products });
+        // const products = await Product.find().populate("category", "name slug");
+        // return res.json({ message: "Products fetched successfully.",ata: products });
+
+        const result = await queryService(Product, req.query, {
+            searchFields: ['name', 'description'],       // regex search targets
+            populate: [{ path: 'category', select: 'name slug' }],
+            // baseFilter: { ...(req.user.role === "customer" ? { isActive: true } : {}) },            // always-on server-side filter user this kind of check when api is private
+            baseFilter: {  isActive: true },            // always-on server-side filter
+        });
+        // return res.json({ message: "Products fetched successfully.", data: result });
+        return res.json({ message: "Products fetched successfully.", ...result });
+
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -32,7 +43,7 @@ const createProduct = async (req, res) => {
         const payload = { ...req.body };
         console.log(req.files, "req.files");
         console.log(req.file, "req.file");
-        
+
         if (req.files && req.files.length) {
             payload.images = req.files.map((file) => `/uploads/${file.filename}`);
         }

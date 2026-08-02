@@ -17,3 +17,5 @@ router.patch("/:id", authenticate, authorizeRoles("admin"), uploadSingle("image"
 router.delete("/:id", authenticate, authorizeRoles("admin"), deleteCategory);
 
 module.exports = router;
+
+
