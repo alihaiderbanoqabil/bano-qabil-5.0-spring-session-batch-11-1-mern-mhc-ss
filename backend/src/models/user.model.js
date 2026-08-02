@@ -49,6 +49,15 @@ const userSchema = new mongoose.Schema(
             select: false, // don't return password by default
         },
 
+        // embedding
+        //  addresses: [{
+        //             street: String,
+        //             city: String,
+        //             state: String,
+        //             zip: String,
+        //             country: String,
+        //         }],
+
     },
     { timestamps: true }
 );

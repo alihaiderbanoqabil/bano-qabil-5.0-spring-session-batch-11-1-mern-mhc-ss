@@ -26,6 +26,13 @@ const categorySchema = new mongoose.Schema(
       ref: "Category",
       default: null,
     },
+    // products: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Category",
+    //     required: [true, "Category is required"],
+    //   }
+    // ]
   },
   { timestamps: true }
 );

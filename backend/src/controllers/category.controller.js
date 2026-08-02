@@ -67,15 +67,22 @@ const getCategoryById = async (req, res) => {
 };
 
 const createCategory = async (req, res) => {
+    console.log(req.body, "req.body");
+    console.log(req.file, "req.file");
+
     try {
         const payload = { ...req.body };
         if (req.file) {
+            // payload.image = `http://localhost:5000/uploads/${req.file.filename}`; // don't store localhost urls or domain names like this while save file path in DB "http://localhost:5000"
             payload.image = `/uploads/${req.file.filename}`;
         }
 
         const category = await Category.create(payload);
         return res.status(201).json({ message: "Category created successfully", category });
     } catch (error) {
+        if (error?.message.startsWith("E11000")) {
+            return res.status(400).json({ message: "Category already exists" });
+        }
         return res.status(500).json({ message: error.message });
     }
 };

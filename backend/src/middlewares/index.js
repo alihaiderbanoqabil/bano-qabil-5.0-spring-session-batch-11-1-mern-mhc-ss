@@ -3,18 +3,22 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose")
+// console.log(__dirname, "__dirname");
+// console.log(__filename, "__filename");
 
+// the below 2 lines of code will automatically create uploads folder 
 const uploadDir = path.join(__dirname, "../../uploads");
 fs.mkdirSync(uploadDir, { recursive: true });
+
 
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith("image/")) return cb(null, true);
     cb(new Error("Only image files are allowed"));
 };
 
-const storage = multer.diskStorage({
+const diskStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        // console.log({ req, file, cb });
+        // console.log({ req, file, cb }, "destination");
         cb(null, uploadDir)
     },
     // filename: (req, file, cb) => {
@@ -23,6 +27,8 @@ const storage = multer.diskStorage({
     //     cb(null, uniqueName);
     // },
     filename: (req, file, cb) => {
+        // console.log({ req, file, cb }, "filename");
+
         const ext = path.extname(file.originalname);
         // const name = path.basename(file.originalname, ext).replace(/\s+/g, "-");
         // const uniqueName = `${name}-${new mongoose.Types.ObjectId()}${ext}`;
@@ -33,10 +39,14 @@ const storage = multer.diskStorage({
 
 
 const upload = multer({
-    storage: storage,
-    fileFilter,
-    limits: { fileSize: 5 * 1024 * 1024 },
+    storage: diskStorage,
+    fileFilter: fileFilter,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 });
+
+const uploadSingle = (fieldName = "image") => upload.single(fieldName);
+const uploadMultiple = (fieldName = "images", maxCount = 5) => upload.array(fieldName, maxCount);
+
 
 const authenticate = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -50,7 +60,7 @@ const authenticate = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || "supersecretkey");
         // console.log(decoded, "decoded");
-        
+
         req.user = decoded;
         next();
     } catch (error) {
@@ -70,10 +80,8 @@ const authorizeRoles = (...roles) => (req, res, next) => {
     next();
 };
 
-const uploadSingle = (fieldName = "image") => upload.single(fieldName);
-const uploadMultiple = (fieldName = "images", maxCount = 5) => upload.array(fieldName, maxCount);
-
 module.exports = {
+    upload,
     authenticate,
     authorizeRoles,
     uploadSingle,
