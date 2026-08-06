@@ -15,8 +15,9 @@ const errorHandler = (err, req, res, next) => {
     // ab status/body badal nahi sakte, is liye Express ko connection band karne do.
     if (res.headersSent) return next(err);
 
-    // AppError statusCode carry karta hai; http-errors (body-parser, etc.) status carry karte hain.
-    let statusCode = err.statusCode || err.status || 500;
+    // AppError statusCode carry karta hai; http-errors (body-parser, etc.) status
+    // carry karte hain; Cloudinary SDK apne errors http_code mein deta hai.
+    let statusCode = err.statusCode || err.status || err.http_code || 500;
     let message = err.message || "Internal server error";
 
     switch (err.name) {

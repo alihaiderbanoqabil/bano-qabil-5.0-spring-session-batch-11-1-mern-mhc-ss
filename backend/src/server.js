@@ -21,14 +21,15 @@ const productRoutes = require("./routes/product.routes");
 const categoryRoutes = require("./routes/category.routes");
 const orderRoutes = require("./routes/order.routes");
 
-// Express ke bahar hone wale crashes ke liye — errorHandler sirf request/controller
-// ke andar aane wale errors pakarta hai, ye request se bahar (stray promise, timer,
-// background job) hone wale crashes ke liye hai. Log karke jaan-boojh kar band karte
-// hain (process.exit) — corrupt state ke sath chalte rehne se behtar hai clean restart,
-// jo process manager (nodemon/pm2) khud kar dega.
+// Express ke bahar hone wale stray promise rejections ke liye — sirf LOG karte
+// hain, process band nahi karte. Wajah: kuch third-party SDKs (jaise Cloudinary)
+// khud internally ek "orphaned" duplicate rejection bhejte hain jo already
+// errorHandler se properly 400/500 ban kar client ko ja chuka hota hai — us par
+// process.exit() karna ek normal user-error (jaise galat file format) ko pure
+// server ka outage bana deta hai sab users ke liye. Genuine sync bugs
+// uncaughtException se abhi bhi fatal hain.
 process.on("unhandledRejection", (reason) => {
-    console.error("Unhandled Rejection:", reason);
-    process.exit(1);
+    console.warn("Unhandled Rejection (logged, process zinda hai):", reason);
 });
 
 process.on("uncaughtException", (err) => {
@@ -80,6 +81,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/media", require("./routes/media.routes"));
 
 // Har route ke baad honi chahiye: upar jo bhi match na ho, wo yahan pakra jata hai.
 app.use(notFound);
