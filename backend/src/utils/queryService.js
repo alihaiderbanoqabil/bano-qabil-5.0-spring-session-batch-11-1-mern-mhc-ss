@@ -45,6 +45,9 @@
 // Keys consumed by the query service — never treated as filter fields
 const RESERVED_KEYS = new Set(['page', 'limit', 'sort', 'fields', 'search', 'searchFields']);
 
+// Bracket-notation operators that may be promoted to their MongoDB $ equivalents
+const OPERATORS = new Set(['gt', 'gte', 'lt', 'lte', 'ne', 'in', 'nin']);
+
 /**
  * Sanitizes a plain object by removing any key that starts with '$'
  * to prevent NoSQL operator injection via user-supplied field names.
@@ -70,21 +73,44 @@ const buildFilter = (query, baseFilter = {}) => {
     const raw = { ...query };
     RESERVED_KEYS.forEach((k) => delete raw[k]);
 
-    // Promote known operators: { price: { gte: '100' } } → { price: { $gte: '100' } }
-    let str = JSON.stringify(raw);
-    str = str.replace(/\b(gt|gte|lt|lte|ne|in|nin)\b/g, (op) => `$${op}`);
-    const parsed = JSON.parse(str);
+    const filter = {};
 
-    // Coerce $in / $nin string values to arrays: "a,b,c" → ["a","b","c"]
-    for (const val of Object.values(parsed)) {
-        if (val !== null && typeof val === 'object') {
-            if (typeof val.$in === 'string') val.$in = val.$in.split(',').map((s) => s.trim());
-            if (typeof val.$nin === 'string') val.$nin = val.$nin.split(',').map((s) => s.trim());
+    for (const [field, value] of Object.entries(raw)) {
+        // Drop injected operator keys so ?$where=... never reaches the driver
+        if (field.startsWith('$')) continue;
+
+        if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+            filter[field] = value;
+            continue;
         }
+
+        const operators = Object.keys(value).filter((key) => OPERATORS.has(key));
+
+        // No bracket operators → nested equality match: ?address[city]=Karachi
+        if (operators.length === 0) {
+            const safe = sanitizeKeys(value);
+            // Everything was stripped as injection — drop the field rather than
+            // handing Mongoose an empty object it cannot cast
+            if (Object.keys(safe).length > 0) filter[field] = safe;
+            continue;
+        }
+
+        // Promote known operators: { price: { gte: '100' } } → { price: { $gte: '100' } }
+        const conditions = {};
+        for (const op of operators) {
+            const opValue = value[op];
+
+            // Coerce in / nin string values to arrays: "a,b,c" → ["a","b","c"]
+            conditions[`$${op}`] =
+                (op === 'in' || op === 'nin') && typeof opValue === 'string'
+                    ? opValue.split(',').map((s) => s.trim())
+                    : opValue;
+        }
+
+        filter[field] = conditions;
     }
 
-    const safe = sanitizeKeys(parsed);
-    return { ...baseFilter, ...safe };
+    return { ...baseFilter, ...filter };
 };
 
 /**
