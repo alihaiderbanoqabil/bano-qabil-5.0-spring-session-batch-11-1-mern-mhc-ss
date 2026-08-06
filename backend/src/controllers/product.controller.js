@@ -1,7 +1,7 @@
 const Product = require("../models/product.model");
 const { queryService } = require("../utils/queryService");
 
-const getProducts = async (req, res) => {
+const getProducts = async (req, res, next) => {
     console.log(req.query, "req.query");
     // console.log(req.params, "req.params");
     // console.log(req.body, "req.body");
@@ -21,11 +21,11 @@ const getProducts = async (req, res) => {
         return res.json({ message: "Products fetched successfully.", ...result });
 
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const getProductById = async (req, res) => {
+const getProductById = async (req, res, next) => {
     try {
         const product = await Product.findById(req.params.id).populate("category", "name slug");
         if (!product) {
@@ -34,11 +34,11 @@ const getProductById = async (req, res) => {
 
         return res.json(product);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const createProduct = async (req, res) => {
+const createProduct = async (req, res, next) => {
     try {
         const payload = { ...req.body };
         console.log(req.files, "req.files");
@@ -51,11 +51,11 @@ const createProduct = async (req, res) => {
         const product = await Product.create(payload);
         return res.status(201).json({ message: "Product created successfully", product });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const updateProduct = async (req, res) => {
+const updateProduct = async (req, res, next) => {
     try {
         const payload = { ...req.body };
         if (req.files && req.files.length) {
@@ -69,11 +69,11 @@ const updateProduct = async (req, res) => {
 
         return res.json({ message: "Product updated successfully", product });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const deleteProduct = async (req, res) => {
+const deleteProduct = async (req, res, next) => {
     try {
         const product = await Product.findByIdAndDelete(req.params.id);
         if (!product) {
@@ -82,7 +82,7 @@ const deleteProduct = async (req, res) => {
 
         return res.json({ message: "Product deleted successfully" });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 

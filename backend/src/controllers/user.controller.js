@@ -1,16 +1,16 @@
 const User = require("../models/user.model");
 
-const getUsers = async (req, res) => {
+const getUsers = async (req, res, next) => {
     try {
         const users = await User.find().select("-password");
         return res.json({ message: "Users get successfully", data: users });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const getUserById = async (req, res) => {
-    console.log(req.params, "req.params");
+const getUserById = async (req, res, next) => {
+    // console.log(req.params, "req.params");
     try {
         if (req.user.role !== "admin" && req.user.id !== req.params.id) {
             return res.status(403).json({ message: "Forbidden" });
@@ -27,11 +27,11 @@ const getUserById = async (req, res) => {
 
         return res.json(user);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
     try {
         const user = await User.findById(req.params.id);
         if (!user) {
@@ -58,11 +58,11 @@ const updateUser = async (req, res) => {
         const updatedUser = await User.findById(user._id).select("-password");
         return res.json({ message: "User updated successfully", user: updatedUser });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const deleteUser = async (req, res) => {
+const deleteUser = async (req, res, next) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
         if (!user) {
@@ -71,7 +71,7 @@ const deleteUser = async (req, res) => {
 
         return res.json({ message: "User deleted successfully" });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 

@@ -1,16 +1,16 @@
 const Order = require("../models/order.model");
 
-const getOrders = async (req, res) => {
+const getOrders = async (req, res, next) => {
     try {
         const filter = req.user.role === "admin" ? {} : { user: req.user.id };
         const orders = await Order.find(filter).populate("user", "name email").populate("items.product", "name price");
         return res.json(orders);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const getOrderById = async (req, res) => {
+const getOrderById = async (req, res, next) => {
     try {
         const order = await Order.findById(req.params.id).populate("user", "name email").populate("items.product", "name price");
         if (!order) {
@@ -23,11 +23,11 @@ const getOrderById = async (req, res) => {
 
         return res.json(order);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const createOrder = async (req, res) => {
+const createOrder = async (req, res, next) => {
     try {
         const payload = {
             ...req.body,
@@ -37,11 +37,11 @@ const createOrder = async (req, res) => {
         const order = await Order.create(payload);
         return res.status(201).json({ message: "Order created successfully", order });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const updateOrder = async (req, res) => {
+const updateOrder = async (req, res, next) => {
     try {
         const order = await Order.findById(req.params.id);
         if (!order) {
@@ -64,11 +64,11 @@ const updateOrder = async (req, res) => {
 
         return res.json({ message: "Order updated successfully", order });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const deleteOrder = async (req, res) => {
+const deleteOrder = async (req, res, next) => {
     try {
         const order = await Order.findByIdAndDelete(req.params.id);
         if (!order) {
@@ -77,7 +77,7 @@ const deleteOrder = async (req, res) => {
 
         return res.json({ message: "Order deleted successfully" });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 

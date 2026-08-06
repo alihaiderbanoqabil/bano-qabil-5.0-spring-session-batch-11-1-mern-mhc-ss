@@ -26,7 +26,7 @@ const setTokenCookie = (res, token) => {
     });
 };
 
-const register = async (req, res) => {
+const register = async (req, res, next) => {
     try {
         // console.log(req.body, "body");
 
@@ -85,11 +85,11 @@ const register = async (req, res) => {
         if (error?.message.startsWith("E11000")) {
             return res.status(400).json({ message: "User already exists" });
         }
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
@@ -122,11 +122,11 @@ const login = async (req, res) => {
             },
         });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const getMe = async (req, res) => {
+const getMe = async (req, res, next) => {
     try {
         const user = await User.findById(req.user.id).select("-password");
         if (!user) {
@@ -135,11 +135,11 @@ const getMe = async (req, res) => {
 
         return res.json(user);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const verifyEmail = async (req, res) => {
+const verifyEmail = async (req, res, next) => {
     try {
         const { token } = req.query;
 
@@ -163,7 +163,7 @@ const verifyEmail = async (req, res) => {
         if (error.name === "TokenExpiredError") {
             return res.status(400).json({ message: "Verification token has expired" });
         }
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 

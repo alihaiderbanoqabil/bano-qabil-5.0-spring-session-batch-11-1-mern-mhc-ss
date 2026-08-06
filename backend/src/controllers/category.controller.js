@@ -1,3 +1,5 @@
+const fs = require("fs/promises");
+const path = require("path");
 const Category = require("../models/category.model");
 // Helper: delete a file if it exists, given the stored "/uploads/xxx.png" style path
 const deleteImageFile = async (imagePath) => {
@@ -37,7 +39,7 @@ const buildCategoryTree = (categories, parentId = null) => {
 //     }
 // };
 
-const getCategories = async (req, res) => {
+const getCategories = async (req, res, next) => {
     try {
         const categories = await Category.find()
             // .populate("parentCategory")
@@ -49,11 +51,11 @@ const getCategories = async (req, res) => {
         return res.json({ message: "Categories fetched successfully.", data: categories });
 
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const getCategoryById = async (req, res) => {
+const getCategoryById = async (req, res, next) => {
     try {
         const category = await Category.findById(req.params.id);
         if (!category) {
@@ -62,11 +64,11 @@ const getCategoryById = async (req, res) => {
 
         return res.json(category);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const createCategory = async (req, res) => {
+const createCategory = async (req, res, next) => {
     console.log(req.body, "req.body");
     console.log(req.file, "req.file");
 
@@ -83,7 +85,7 @@ const createCategory = async (req, res) => {
         if (error?.message.startsWith("E11000")) {
             return res.status(400).json({ message: "Category already exists" });
         }
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
@@ -105,7 +107,7 @@ const createCategory = async (req, res) => {
 //     }
 // };
 
-const updateCategory = async (req, res) => {
+const updateCategory = async (req, res, next) => {
     try {
         // 1. Pehle existing category fetch karo, taake old image path pata chale
         const existingCategory = await Category.findById(req.params.id);
@@ -127,11 +129,11 @@ const updateCategory = async (req, res) => {
 
         return res.json({ message: "Category updated successfully", category });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-const deleteCategory = async (req, res) => {
+const deleteCategory = async (req, res, next) => {
     try {
         const category = await Category.findByIdAndDelete(req.params.id);
         if (!category) {
@@ -140,7 +142,7 @@ const deleteCategory = async (req, res) => {
 
         return res.json({ message: "Category deleted successfully" });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
