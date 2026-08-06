@@ -3,6 +3,7 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose")
+const AppError = require("../utils/AppError");
 // console.log(__dirname, "__dirname");
 // console.log(__filename, "__filename");
 
@@ -13,9 +14,7 @@ fs.mkdirSync(uploadDir, { recursive: true });
 
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith("image/")) return cb(null, true);
-    const error = new Error("Only image files are allowed");
-    error.statusCode = 400;
-    cb(error);
+    cb(new AppError("Only image files are allowed", 400));
 };
 
 const diskStorage = multer.diskStorage({
@@ -54,29 +53,24 @@ const authenticate = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return res.status(401).json({ message: "Authentication required" });
+        throw new AppError("Authentication required", 401);
     }
 
     const token = authHeader.split(" ")[1];
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || "supersecretkey");
-        // console.log(decoded, "decoded");
-
-        req.user = decoded;
-        next();
-    } catch (error) {
-        return res.status(401).json({ message: "Invalid or expired token" });
-    }
+    // jwt.verify JsonWebTokenError / TokenExpiredError throw karta hai. Express
+    // middleware ke sync throws khud pakar leta hai, aur errorHandler dono ko 401 bana deta hai.
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    next();
 };
 
 const authorizeRoles = (...roles) => (req, res, next) => {
     if (!req.user) {
-        return res.status(401).json({ message: "Authentication required" });
+        throw new AppError("Authentication required", 401);
     }
 
     if (!roles.includes(req.user.role)) {
-        return res.status(403).json({ message: "Forbidden: insufficient role" });
+        throw new AppError("Forbidden: insufficient role", 403);
     }
 
     next();

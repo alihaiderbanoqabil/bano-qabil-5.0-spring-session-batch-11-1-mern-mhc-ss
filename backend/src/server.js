@@ -21,23 +21,11 @@ const productRoutes = require("./routes/product.routes");
 const categoryRoutes = require("./routes/category.routes");
 const orderRoutes = require("./routes/order.routes");
 
-// process.on("unhandledRejection"...) aur uncaughtException
-// Ye do lines Express ke bahar hone wale crashes pakarne ke liye hain — errorHandler sirf un errors ko pakarta hai jo kisi request ke andar (route/controller mein) aayen. Lekin kabhi kabhi error aisi jagah aata hai jahan Express bilkul involved nahi hota:
-
-// Koi setTimeout ya setInterval ke andar ek async function fail ho jaye
-// Koi background job ya cron chal raha ho jo kisi request se related na ho
-// Koi promise banayi lekin uska .catch() lagana bhool gaye
-// Aise cases mein agar ye handlers na hon, to Node.js poora process silently crash kar deta ya ajeeb tareeke se hang ho jata — koi log bhi nahi milta ke wajah kya thi. Ye do lines sirf itna karti hain:
-
-// process.on("unhandledRejection", (reason) => {
-//     console.error("Unhandled Rejection:", reason);
-//     process.exit(1);
-// });
-// Error ko console mein log karo (taake pata chale kya hua)
-// Phir process.exit(1) — server ko jaan boojh kar band kar do
-// Sawal ye ho sakta hai: "band kyun karein, handle kyun na karein?" — Node.js ki official recommendation yehi hai: agar unhandledRejection/uncaughtException aa jaye, iska matlab app ki state corrupt ho sakti hai (kisi variable ka half-updated state, DB connection ka ajeeb state, etc). Usay chalte rehne dena zyada risky hai bajaye clean restart ke. Production mein aapke paas normally nodemon/pm2 jaisa process manager hota hai jo crash hone par automatically restart kar deta hai — to ye "fail fast, restart clean" pattern hai.
-
-// Agar aap chahen ke server na band ho, sirf log ho — wo bhi kar sakte hain, lekin standard practice yehi crash-and-restart hai.
+// Express ke bahar hone wale crashes ke liye — errorHandler sirf request/controller
+// ke andar aane wale errors pakarta hai, ye request se bahar (stray promise, timer,
+// background job) hone wale crashes ke liye hai. Log karke jaan-boojh kar band karte
+// hain (process.exit) — corrupt state ke sath chalte rehne se behtar hai clean restart,
+// jo process manager (nodemon/pm2) khud kar dega.
 process.on("unhandledRejection", (reason) => {
     console.error("Unhandled Rejection:", reason);
     process.exit(1);
@@ -93,10 +81,10 @@ app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/orders", orderRoutes);
 
-// Must come after every route: catches anything unmatched above.
+// Har route ke baad honi chahiye: upar jo bhi match na ho, wo yahan pakra jata hai.
 app.use(notFound);
-// Must be registered last: catches every error passed to next(), thrown in a
-// sync handler, or rejected in an async handler (Express 5 forwards these automatically).
+// Sab se aakhir mein honi chahiye: next() se aaya, sync throw hua, ya async
+// reject hua (Express 5 khud forward karta hai) — har error yahan aata hai.
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
@@ -106,3 +94,20 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
+
+
+
+// Quick reference — errorHandler live test se ye responses aate hain:
+
+// expired verification token       400  {"message":"Verification token has expired"}
+// expired auth token               401  {"message":"Token expired"}
+// invalid auth token               401  {"message":"Invalid token"}
+// malformed JSON body              400  {"message":"Invalid JSON body"}
+// 404 unmatched route              404  {"message":"Route not found - GET /api/nope"}
+// CastError bad ObjectId           400  {"message":"Invalid _id: not-valid"}
+// customer → admin-only route      403  {"message":"Forbidden: insufficient role"}
+// upload non-image                 400  {"message":"Only image files are allowed"}
+// duplicate category name          400  {"message":"name already exists"}
+// missing product fields           400  {"message":"Category is required, Price is required"}
+// unexpected bug (dev)             500  {"message":"Cannot read properties of undefined..."}
+// unexpected bug (production)      500  {"message":"Internal server error"}
