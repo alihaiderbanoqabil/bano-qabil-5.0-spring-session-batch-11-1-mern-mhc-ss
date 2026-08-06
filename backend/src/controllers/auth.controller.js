@@ -2,12 +2,28 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 const { createVerificationToken, sendVerificationEmail } = require("../utils/email");
 
+const TOKEN_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days — same as the JWT expiry
+
 const createToken = (user) => {
     return jwt.sign(
         { id: user._id, email: user.email, role: user.role },
         process.env.JWT_SECRET,
         { expiresIn: "7d" }
     );
+};
+
+// Sends the JWT as an httpOnly cookie so the browser attaches it automatically.
+// httpOnly keeps it out of reach of JavaScript, which protects it from XSS.
+const setTokenCookie = (res, token) => {
+    const isProduction = process.env.NODE_ENV === "production";
+
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: isProduction,                     // HTTPS only in production
+        sameSite: isProduction ? "none" : "lax",  // "none" needs secure: true
+        maxAge: TOKEN_MAX_AGE,
+        path: "/",
+    });
 };
 
 const register = async (req, res) => {
@@ -91,6 +107,8 @@ const login = async (req, res) => {
         }
 
         const token = createToken(user);
+
+        setTokenCookie(res, token);
 
         return res.json({
             message: "Login successfully",
