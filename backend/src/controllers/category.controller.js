@@ -39,10 +39,11 @@ const getCategories = async (req, res) => {
         // .populate("parentCategory")
         // .populate("parentCategory", "name slug image")
         .lean(); // .lean() gives plain JS objects, easier/faster to manipulate
+    // return res.json({ message: "Categories fetched successfully.", data: categories });
 
-    // const categoryTree = buildCategoryTree(categories);
+    const categoryTree = buildCategoryTree(categories);
 
-    return res.json({ message: "Categories fetched successfully.", data: categories });
+    return res.json({ message: "Categories fetched successfully.", data: categoryTree });
 };
 
 const getCategoryById = async (req, res) => {

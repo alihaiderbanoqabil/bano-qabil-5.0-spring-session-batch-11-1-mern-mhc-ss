@@ -13,8 +13,8 @@ router.post("/upload", authenticate, cloudinaryUpload.single("file"), uploadMedi
 
 router.post("/upload-multiple", authenticate, cloudinaryUpload.array("files", 5), uploadMultipleMedia);
 
-router.put("/media/:id", authenticate, cloudinaryUpload.single("file"), updateMedia);
+router.put("/upload/:id", authenticate, cloudinaryUpload.single("file"), updateMedia);
 
-router.delete("/media/:id", authenticate, deleteMedia);
+router.delete("/upload/:id", authenticate, deleteMedia);
 
 module.exports = router;

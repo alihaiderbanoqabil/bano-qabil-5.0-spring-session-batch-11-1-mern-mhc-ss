@@ -99,13 +99,12 @@ const login = async (req, res) => {
     if (!user.isEmailVerified) {
         throw new AppError("Please verify your email before logging in", 403);
     }
-
     const token = createToken(user);
-
-    setTokenCookie(res, token);
-
+    // const isWeb = req.query.app === "web"
+    // if (isWeb) setTokenCookie(res, token)
     return res.json({
         message: "Login successfully",
+        // ...(isWeb ? {} : { token }),
         token,
         user: {
             id: user._id,

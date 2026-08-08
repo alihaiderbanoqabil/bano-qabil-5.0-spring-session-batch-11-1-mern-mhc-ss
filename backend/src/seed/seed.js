@@ -290,8 +290,8 @@ async function seedOrders({ customers, products }) {
       status === "cancelled"
         ? pick(["failed", "refunded"])
         : status === "delivered"
-        ? "paid"
-        : pick(["pending", "paid"]);
+          ? "paid"
+          : pick(["pending", "paid"]);
 
     const order = new Order({
       user: user._id,
