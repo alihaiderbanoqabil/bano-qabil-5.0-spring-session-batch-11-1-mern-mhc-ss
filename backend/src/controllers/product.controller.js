@@ -5,8 +5,8 @@ const { queryService } = require("../utils/queryService");
 const getProducts = async (req, res) => {
     // console.log(req.query, "req.query");
 
-    // const products = await Product.find().populate("category", "name slug");
-    // return res.json({ message: "Products fetched successfully.",ata: products });
+    // const products = await Product.find().populate("category", "name slug").select("name description");
+    // return res.json({ message: "Products fetched successfully.", data: products });
 
     const result = await queryService(Product, req.query, {
         searchFields: ['name', 'description'],       // regex search targets

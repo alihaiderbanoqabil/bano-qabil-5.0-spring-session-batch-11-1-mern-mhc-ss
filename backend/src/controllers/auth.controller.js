@@ -1,17 +1,43 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 const AppError = require("../utils/AppError");
-const { createVerificationToken, sendVerificationEmail } = require("../utils/email");
+const {
+    // createVerificationToken,
+    sendVerificationEmail } = require("../utils/email");
 
 const TOKEN_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days — same as the JWT expiry
 
-const createToken = (user) => {
+// const createToken = (user, expiryTime) => {
+//     return jwt.sign(
+//         { id: user._id, email: user.email, role: user.role },
+//         process.env.JWT_SECRET,
+//         { expiresIn: expiryTime }
+//     );
+// };
+
+const createToken = (user, expiryTime = "7d") => {
     return jwt.sign(
         { id: user._id, email: user.email, role: user.role },
         process.env.JWT_SECRET,
-        { expiresIn: "7d" }
+        { expiresIn: expiryTime }
     );
 };
+
+// const createToken = (user, expiryTime = "24h") => {
+//     return jwt.sign(
+//         { id: user._id, email: user.email, role: user.role },
+//         process.env.JWT_SECRET,
+//         { expiresIn: expiryTime }
+//     );
+// };
+
+// const createToken = (user) => {
+//     return jwt.sign(
+//         { id: user._id, email: user.email, role: user.role },
+//         process.env.JWT_SECRET,
+//         { expiresIn: "7d" }
+//     );
+// };
 
 // Sends the JWT as an httpOnly cookie so the browser attaches it automatically.
 // httpOnly keeps it out of reach of JavaScript, which protects it from XSS.
@@ -57,8 +83,9 @@ const register = async (req, res) => {
     });
 
 
-    if (req.body.role === "customer") {
-        const verificationToken = createVerificationToken(user);
+    if (isCustomer) {
+        // const verificationToken = createVerificationToken(user);
+        const verificationToken = createToken(user, "24h");
         user.emailVerificationToken = verificationToken;
         await user.save();
 

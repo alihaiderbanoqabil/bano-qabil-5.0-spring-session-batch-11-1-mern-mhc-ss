@@ -3,13 +3,13 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
-const createVerificationToken = (user) => {
-    return jwt.sign(
-        { id: user._id, email: user.email },
-        process.env.JWT_SECRET,
-        { expiresIn: "24h" }
-    );
-};
+// const createVerificationToken = (user) => {
+//     return jwt.sign(
+//         { id: user._id, email: user.email },
+//         process.env.JWT_SECRET,
+//         { expiresIn: "24h" }
+//     );
+// };
 
 const createVerificationEmailTemplate = (name, verificationLink) => {
     return `
@@ -57,7 +57,7 @@ const sendVerificationEmail = async ({ to, name, verificationLink }) => {
 };
 
 module.exports = {
-    createVerificationToken,
+    // createVerificationToken,
     createVerificationEmailTemplate,
     sendVerificationEmail,
 };

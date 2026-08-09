@@ -1,19 +1,23 @@
 const Media = require("../models/media.model");
 const cloudinary = require("../config/cloudinary");
 const AppError = require("../utils/AppError");
+const { uploadSingleMedia } = require("../services/media.service");
 
 const uploadMedia = async (req, res) => {
     console.log(req.file, "file");
-    
-    if (!req.file) {
-        throw new AppError("No file uploaded", 400);
-    }
 
-    const media = await Media.create({
-        url: req.file.path,          // Cloudinary secure URL
-        publicId: req.file.filename, // Cloudinary public_id
-        uploadedBy: req.user?._id,
-    });
+    const media = await uploadSingleMedia(req)
+    
+    //  if (!req.file) {
+    //         throw new AppError("No file uploaded", 400);
+    //     }
+
+    //     const media = await Media.create({
+    //         url: req.file.path,          // Cloudinary secure URL
+    //         publicId: req.file.filename, // Cloudinary public_id
+    //         uploadedBy: req.user?._id,
+    //     });
+
 
     return res.status(201).json({ message: "Upload successful", media });
 };
