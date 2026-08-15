@@ -1,10 +1,24 @@
 const Order = require("../models/order.model");
 const AppError = require("../utils/AppError");
+const { queryService } = require("../utils/queryService");
 
 const getOrders = async (req, res) => {
-    const filter = req.user.role === "admin" ? {} : { user: req.user.id };
-    const orders = await Order.find(filter).populate("user", "name email").populate("items.product", "name price");
-    return res.json(orders);
+    // const filter = req.user.role === "admin" ? {} : { user: req.user.id };
+    // const orders = await Order.find(filter).populate("user", "name email").populate("items.product", "name price");
+    // return res.json(orders);
+
+    const result = await queryService(Order, req.query,
+        {
+            baseFilter: req.user.role === "admin" ? {} : { user: req.user.id },            // always-on server-side filter
+
+            populate: [
+                { path: 'user', select: 'name email' }, 
+                { path: 'items.product', select: 'name price' }
+            ],
+
+        }
+    );
+  return res.json({ message: "Orders fetched successfully.", ...result });
 };
 
 const getOrderById = async (req, res) => {

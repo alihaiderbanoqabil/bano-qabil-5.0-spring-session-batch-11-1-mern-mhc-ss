@@ -8,7 +8,7 @@
  * ─── QUERY PARAMETERS ────────────────────────────────────────────────────────
  *
  * FILTERING
- *   ?status=active                          → equality filter
+ *   ?status=active                         → equality filter
  *   ?price[gte]=100&price[lte]=500          → range filter ($gte, $lte, $gt, $lt, $ne)
  *   ?status[in]=pending,processing          → array inclusion ($in)
  *   ?status[nin]=cancelled,refunded         → array exclusion ($nin)
@@ -153,6 +153,8 @@ const buildSearchCondition = (search, searchFields = []) => {
  * @returns {Promise<{ data: any[], pagination: Object }>}
  */
 const queryService = async (Model, query = {}, options = {}) => {
+    // console.log(query, "query");
+
     const {
         baseFilter = {},
         searchFields = [],
@@ -192,6 +194,8 @@ const queryService = async (Model, query = {}, options = {}) => {
     let dbQuery = Model.find(filter).select(fields).sort(sort).skip(skip).limit(limit);
 
     for (const pop of populate) {
+        console.log(pop, "pop");
+
         dbQuery = dbQuery.populate(pop.path, pop.select ?? '');
     }
 

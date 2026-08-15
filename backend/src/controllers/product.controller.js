@@ -8,12 +8,23 @@ const getProducts = async (req, res) => {
     // const products = await Product.find().populate("category", "name slug").select("name description");
     // return res.json({ message: "Products fetched successfully.", data: products });
 
-    const result = await queryService(Product, req.query, {
-        searchFields: ['name', 'description'],       // regex search targets
-        populate: [{ path: 'category', select: 'name slug' }],
-        // baseFilter: { ...(req.user.role === "customer" ? { isActive: true } : {}) },            // always-on server-side filter user this kind of check when api is private
-        baseFilter: { isActive: true },            // always-on server-side filter
-    });
+    // const result = await queryService(Product, req.query, {
+    //     searchFields: ['name', 'description'],       // regex search targets
+    //     populate: [{ path: 'category', select: 'name slug' }],
+    //     // baseFilter: { ...(req.user.role === "customer" ? { isActive: true } : {}) },            // always-on server-side filter user this kind of check when api is private
+    //     baseFilter: { isActive: true },            // always-on server-side filter
+    // });
+
+    const result = await queryService(Product, req.query,
+        {
+            baseFilter: { isActive: true },            // always-on server-side filter
+            searchFields: ['name', 'description'],       // regex search targets
+            populate: [{ path: 'category', select: 'name slug' }],
+            // defaultLimit: 50,
+            // maxLimit: 200
+        }
+    );
+
     // return res.json({ message: "Products fetched successfully.", data: result });
     return res.json({ message: "Products fetched successfully.", ...result });
 };
