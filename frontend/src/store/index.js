@@ -1,6 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "./features/counterSlice";
-import cakeReducer from "./features/cakeSlice";
 import userReducer from "./features/userSlice";
 import { ecommerceApi } from "./features/apiSlice";
 import { setupListeners } from "@reduxjs/toolkit/query";
@@ -9,8 +7,6 @@ export const store = configureStore({
   reducer: {
     // Add the generated reducer as a specific top-level slice
     [ecommerceApi.reducerPath]: ecommerceApi.reducer,
-    counter: counterReducer,
-    cake: cakeReducer,
     user: userReducer,
   },
   // Adding the api middleware enables caching, invalidation, polling,

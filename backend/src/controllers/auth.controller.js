@@ -129,16 +129,17 @@ const login = async (req, res) => {
     const token = createToken(user);
     // const isWeb = req.query.app === "web"
     // if (isWeb) setTokenCookie(res, token)
+    setTokenCookie(res, token)
     return res.json({
         message: "Login successfully",
         // ...(isWeb ? {} : { token }),
-        token,
+        // token,
         user: {
             id: user._id,
             name: user.name,
             email: user.email,
             role: user.role,
-            isEmailVerified: user.isEmailVerified,
+            // isEmailVerified: user.isEmailVerified,
         },
     });
 };

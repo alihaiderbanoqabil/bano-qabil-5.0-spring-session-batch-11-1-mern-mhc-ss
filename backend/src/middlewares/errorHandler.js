@@ -1,3 +1,4 @@
+const { capitalized } = require("../utils");
 const AppError = require("../utils/AppError");
 
 // Chalti hai jab koi route match na ho — har app.use("/api/...") ke baad register honi chahiye.
@@ -49,7 +50,7 @@ const errorHandler = (err, req, res, next) => {
     if (err.code === 11000) {
         statusCode = 400;
         const field = Object.keys(err.keyValue || {})[0];
-        message = field ? `${field} already exists` : "Duplicate field value";
+        message = field ? `${capitalized(field)} already exists` : "Duplicate field value";
     }
 
     // express.json() se aane wala malformed JSON body ka error

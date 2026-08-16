@@ -54,7 +54,9 @@ app.use(xss());
 
 // CORS — configure allowed origins as needed
 app.use(cors({
-    origin: ['http://localhost:3000'], // replace with your allowed origin(s), or '*' for all
+    // origin: ['http://localhost:5173'], // replace with your allowed origin(s), or '*' for all
+    origin: 'http://localhost:5173', // replace with your allowed origin(s), or '*' for all
+    // origin: "*", // replace with your allowed origin(s), or '*' for all
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true, // only if you need cookies/auth headers cross-origin
 }));
